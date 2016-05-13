@@ -27,7 +27,7 @@
 		var amp = 1,
 			sineCount = Math.floor(Math.random() * 5) + 2,
 			start = Math.floor(Math.random() * 100),
-			stop = start + 361;
+			stop = start + 360;
 
 		ctx.beginPath();
 
@@ -151,17 +151,22 @@
 		ctx.fillText("Mass: " + Math.floor(radius),10,50);
 	}
 
-	document.addEventListener('mousemove', function(e) {
+	document.body.onmousemove = function(e) {
 		mX = e.clientX;
 		mY = e.clientY;
-	})
-
-	document.body.onkeyup = function(e){
-    	if(e.keyCode == 32) space = false;
 	}
 
-    document.body.onkeydown = function(e){
-    	if(e.keyCode == 32) space = true;
+	document.body.onkeyup = function(e) {
+    	if (e.keyCode == 32) space = false;
+	}
+
+    document.body.onkeydown = function(e) {
+    	if( e.keyCode == 32) space = true;
+    }
+
+    document.body.onresize = function(e) {
+    	canvas.height = window.innerHeight;
+    	canvas.width = window.innerWidth;
     }
 </script>
 <style type="text/css">
