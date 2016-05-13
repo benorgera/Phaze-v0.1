@@ -15,7 +15,8 @@
 		food = [],
 		foodRadius = 10,
 		lineWidth = 5,
-		radius = 60;
+		radius = 60,
+		space = false;
 
 	canvas.height = window.innerHeight;
 	canvas.width = window.innerWidth;
@@ -26,7 +27,7 @@
 		var amp = 1,
 			sineCount = Math.floor(Math.random() * 5) + 2,
 			start = Math.floor(Math.random() * 100),
-			stop = start + 360;
+			stop = start + 361;
 
 		ctx.beginPath();
 
@@ -93,19 +94,26 @@
 		for (var i = 0; i < food.length; i++) {
 			var actualDist = Math.sqrt(Math.pow(food[i].xPos - cx, 2) + Math.pow(food[i].yPos - cy, 2));
 
-			if (actualDist > radDist) {
+			if (actualDist >= radDist) {
 				drawFood(food[i].xPos, food[i].yPos, food[i].color);
 			} else {
 				food.splice(i, 1);
-				increaseRadius();
+				gainFood(1);
 			}
 		}
 	}
 
-	function increaseRadius() {
-		var areaOfFood = Math.pow(foodRadius, 2) * Math.PI,
+	function gainFood(num) {
+		var areaOfFood = Math.pow(foodRadius, 2) * Math.PI * num,
 			areaOfCharacter = Math.pow(radius, 2) * Math.PI,
 			newArea = areaOfCharacter + areaOfFood;
+		radius = Math.sqrt(newArea / Math.PI);
+	}
+
+	function loseFood(num) {
+		var areaOfFood = Math.pow(foodRadius, 2) * Math.PI * num,
+			areaOfCharacter = Math.pow(radius, 2) * Math.PI,
+			newArea = areaOfCharacter - areaOfFood;
 		radius = Math.sqrt(newArea / Math.PI);
 	}
 
@@ -127,6 +135,13 @@
 			spawnFood();
 		}
 
+		if (space && radius >= 60) {
+			speed = 30;
+			loseFood(1/2);
+		} else {
+			speed = 10;
+		}
+
 		drawCharacter();
 	}, 1000 / 15)
 
@@ -134,6 +149,14 @@
 		mX = e.clientX;
 		mY = e.clientY;
 	})
+
+	document.body.onkeyup = function(e){
+    	if(e.keyCode == 32) space = false;
+	}
+
+    document.body.onkeydown = function(e){
+    	if(e.keyCode == 32) space = true;
+    }
 </script>
 <style type="text/css">
 	* {
