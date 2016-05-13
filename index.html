@@ -129,6 +129,7 @@
 		if ((Math.abs(mX - cx) > 5 || (Math.abs(mY - cy) > 5))) move(); //don't move if the mouse is basically centered on the character
 		clearMap();
 		drawAllFood();
+		drawScore();
 
 		if (count >= 6) {
 			count = 0;
@@ -144,6 +145,11 @@
 
 		drawCharacter();
 	}, 1000 / 15)
+
+	function drawScore() {
+		ctx.font = "30px Arial";
+		ctx.fillText("Mass: " + Math.floor(radius),10,50);
+	}
 
 	document.addEventListener('mousemove', function(e) {
 		mX = e.clientX;
