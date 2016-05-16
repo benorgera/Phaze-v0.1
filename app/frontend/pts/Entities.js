@@ -45,14 +45,21 @@ function Player(username) {
 	* update angle
 	*/
 	this.update = () => {
-		var n = angleBetween({x: window.innerWidth / 2, y: window.innerHeight / 2}, mouse);
 
-		theta = n;
-		// Smoother Movement
-		// if(n < theta) 
-		// 	theta = theta - (theta - n) / 10;
-		// else
-		// 	theta = theta + (n - theta) / 10;
+		var newTheta = angleBetween(crds2ctx({
+			x: this.x,
+			y: this.y})
+			, mouse);
+
+		var dif = Math.abs(newTheta - theta);
+
+		if (dif > Math.PI) {
+			dif = (2 * Math.PI) - dif;
+			theta += Math.abs(theta - newTheta) > Math.PI && newTheta < Math.PI ? dif / TURN_SOFTEN : -1 * dif / TURN_SOFTEN;
+			theta %= Math.PI * 2;
+		} else {
+			theta += newTheta > theta ? dif / TURN_SOFTEN : -1 * dif / TURN_SOFTEN;
+		}
 
 		this.radius = PLAYER_RADIUS + (0.5 * this.score);
 	}

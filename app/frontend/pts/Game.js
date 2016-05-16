@@ -1,6 +1,8 @@
 // global variables
 
 var Game = {}
+	, TURN_SOFTEN = 10
+	, FOOD_PER_SECOND = 1
 	, SPEED = 5
 	, MAP_SIZE = 4000
 	, FOOD_RADIUS = 6
@@ -85,7 +87,7 @@ function startGame(username) {
 
 	spawnFoodInterval = setInterval(() => {
 		Game.food.push(new Food());
-	}, 1000)
+	}, 1000 / FOOD_PER_SECOND)
 }
 
 function stopGame() {
