@@ -21,12 +21,17 @@ doge.src = 'https://cdn.thinglink.me/api/image/727110550026190849/1240/10/scalet
 function Player(username) {
 	Entity.call(this, ~~((Math.random() * 300) + MAP_SIZE / 3), ~~((Math.random() * 300) + MAP_SIZE / 3), PLAYER_RADIUS);
 	this.food = [];
+	this.skews = [];
 	this.score = 0;
+	this.impact = [];
 	this.nitrus = false;
 	this.username = username;
 	this.speed = SPEED;
 
 	this.getScoreDecrease = () => 0.02 * this.score;
+
+	for (var i = 0; i < 360; i++)
+		this.skews[i] = 0;
 
 	/*
 	* move player
@@ -67,16 +72,30 @@ function Player(username) {
 	this.draw = (x, y) => {
 		var amp = 1.2,
 			sineCount = Math.floor(Math.random() * 5) + 3,
-			start = Math.floor(Math.random() * 100),
+			start = 0,
 			stop = start + 360;
 
 		ctx.beginPath();
 
-		for (var i = start; i < stop; i++) {
+		for (var i = 0; i < 360; i++)
+			this.skews[i] /= 1.1;
+
+
+		for (var i = 0; i < 360; i++) 
+			if (this.impact[i]) 
+				for (var j = 0; j < this.impact[i] * 2; j++) 
+					this.skews[((~~(i - this.impact[i] + j)) + 360) % 360] = this.impact[i] / 2 * Math.sin(j * Math.PI / this.impact[i] / 2);
+
+		this.impact = [];
+
+
+		for (var i = 0; i < 360; i++) {
+
 			var angle = i * Math.PI / 180,
-		  		pt = sineCircleXYatAngle(x, y, this.radius, amp, angle, sineCount);
+		  		pt = sineCircleXYatAngle(x, y, this.radius - this.skews[i], amp, angle, sineCount);
 		  	ctx.lineTo(pt.x, pt.y);
 		}
+
 
 		doge.width = this.radius + 5;
 		doge.height = this.radius + 5;
@@ -179,6 +198,7 @@ function Food() {
 
 		if (dist < distThreshold) {
 			var angle = angleBetween(this, o);
+			o.impact[~~toDegrees(angle + Math.PI) % 360] = attractionStrength * 1.5;
 			this.y += attractionStrength * Math.sin(angle);
 			this.x += attractionStrength * Math.cos(angle);
 			this.radius = (this.radius - 0.25 * attractionStrength) < 0 ? 0.1 : (this.radius - 0.25 * attractionStrength);
