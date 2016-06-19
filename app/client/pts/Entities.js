@@ -46,7 +46,6 @@ function Player(username, x, y, _id, color) {
 	*/
 	this.move = () => {
 
-		console.log(this.x, this.y);
 		if(this.y - this.radius > 0 && this.y + this.radius < Constants.MAP_SIZE)
 			this.y += this.speed * Math.sin(theta);
 
@@ -61,6 +60,8 @@ function Player(username, x, y, _id, color) {
 
 		var newTheta = angleBetween(crds2ctx({x: this.x, y: this.y})
 			, {x: mouse.x - this.radius * 2, y: mouse.y - this.radius * 2});
+
+		console.log(newTheta);
 
 
 		var dif = Math.abs(newTheta - theta);
